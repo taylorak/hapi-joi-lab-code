@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node ./node_modules/lab/bin/lab -e lab -m 5000 -r html -o ./lab/result/index.html ./lab",
     "start": "nodemon ./src"
   },
   "repository": {
