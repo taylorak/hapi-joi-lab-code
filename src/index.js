@@ -28,9 +28,16 @@ server.route({
 server.route({
   method: 'POST',
   path: '/counter',
-  handler: function (request, reply) {
-    counterStore.counter = request.payload.counter;
-    reply(counterStore);
+  config: {
+    handler: function (request, reply) {
+      counterStore.counter = request.payload.counter;
+      reply(counterStore);
+    },
+    validate: {
+      payload: {
+        counter: Joi.number().integer().min(0).max(1000)
+      }
+    }
   }
 });
 
@@ -38,7 +45,7 @@ server.route({
   method: 'PUT',
   path: '/counter/increment',
   handler: function (request, reply) {
-    counterStore.counter++;
+    if(counterStore.counter < 1000) counterStore.counter++;
     reply(counterStore);
   }
 });
@@ -47,7 +54,7 @@ server.route({
   method: 'PUT',
   path: '/counter/decrement',
   handler: function (request, reply) {
-    counterStore.counter--;
+    if(counterStore.counter > 0) counterStore.counter--;
     reply(counterStore);
   }
 });
