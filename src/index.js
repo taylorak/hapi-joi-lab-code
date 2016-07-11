@@ -29,6 +29,7 @@ server.route({
   method: 'POST',
   path: '/counter',
   handler: function (request, reply) {
+    counterStore.counter = request.payload.counter;
     reply(counterStore);
   }
 });
@@ -37,6 +38,7 @@ server.route({
   method: 'PUT',
   path: '/counter/increment',
   handler: function (request, reply) {
+    counterStore.counter++;
     reply(counterStore);
   }
 });
@@ -45,6 +47,7 @@ server.route({
   method: 'PUT',
   path: '/counter/decrement',
   handler: function (request, reply) {
+    counterStore.counter--;
     reply(counterStore);
   }
 });
