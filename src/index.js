@@ -8,14 +8,14 @@ const PORT = process.env.PORT || 3000;
 const server = new Hapi.Server();
 server.connection({port: PORT});
 
-let counterStore = { counter: 0 };
+let counterStore = require('./counterStore');
 
 server.route({
   method: 'GET',
   path: '/',
   handler: function (request, reply) {
     reply(Boom.forbidden());
-  },
+  }
 });
 
 server.route({
@@ -48,7 +48,7 @@ server.route({
   handler: function (request, reply) {
     counterStore.counter++;
     if(counterStore.counter > 1000) {
-      return reply(Boom.badImplementation("counter must be below 1000"));
+      return reply(Boom.badRequest("counter must be below 1000"));
     }
     reply(counterStore);
 
@@ -61,7 +61,7 @@ server.route({
   handler: function (request, reply) {
     counterStore.counter--;
     if(counterStore.counter < 0) {
-      return reply(Boom.badImplementation("counter must be greater than or equal to 0"));
+      return reply(Boom.badRequest("counter must be greater than or equal to 0"));
     }
     reply(counterStore);
   }
