@@ -7,8 +7,8 @@ const server = require('../src/');
 let counterStore = require('../src/counterStore');
 const expect = Code.expect;
 
-lab.experiment('GET /', () => {
-  lab.test('root route should be forbidden', (done) => {
+lab.experiment('counter', () => {
+  lab.test('GET / root route should be forbidden', (done) => {
     server.inject({
       method: "GET",
       url: "/"
@@ -17,11 +17,8 @@ lab.experiment('GET /', () => {
       done();
     });
   });
-});
 
-lab.experiment('GET /counter', () => {
-
-  lab.test('get the initial counter value', (done) => {
+  lab.test('GET /counter get the initial counter value', (done) => {
     server.inject({
       method: "GET",
       url: "/counter"
@@ -36,11 +33,7 @@ lab.experiment('GET /counter', () => {
     });
   });
 
-});
-
-lab.experiment('POST /counter', () => {
-
-  lab.test('sets the counter value', (done) => {
+  lab.test('POST /counter sets the counter value', (done) => {
     let counter = 50;
     server.inject({
       method: "POST",
@@ -58,7 +51,7 @@ lab.experiment('POST /counter', () => {
     });
   });
 
-  lab.test('trigger an error if counter > 1000', (done) => {
+  lab.test('POST /counter trigger an error if counter > 1000', (done) => {
     let counter = 1002;
     server.inject({
       method: "POST",
@@ -72,7 +65,7 @@ lab.experiment('POST /counter', () => {
     });
   });
 
-  lab.test('trigger an error if counter < 0', (done) => {
+  lab.test('POST /counter trigger an error if counter < 0', (done) => {
     let counter = -2;
     server.inject({
       method: "POST",
@@ -86,7 +79,7 @@ lab.experiment('POST /counter', () => {
     });
   });
 
-  lab.test('trigger an error if counter is not a number', (done) => {
+  lab.test('POST /counter trigger an error if counter is not a number', (done) => {
     let counter = 'zero';
     server.inject({
       method: "POST",
@@ -99,12 +92,7 @@ lab.experiment('POST /counter', () => {
       done();
     });
   });
-
-});
-
-lab.experiment('PUT /counter/increment', () => {
-
-  lab.test('increment the counter value', (done) => {
+  lab.test('PUT /counter/increment increment the counter value', (done) => {
     counterStore.counter = 0;
     let initialCounter = counterStore.counter;
     server.inject({
@@ -121,7 +109,7 @@ lab.experiment('PUT /counter/increment', () => {
     });
   });
 
-  lab.test('trigger an error if counter > 1000', (done) => {
+  lab.test('PUT /counter/increment trigger an error if counter > 1000', (done) => {
     counterStore.counter = 1000;
     server.inject({
       method: "PUT",
@@ -131,10 +119,7 @@ lab.experiment('PUT /counter/increment', () => {
       done();
     });
   });
-});
-
-lab.experiment('PUT /counter/decrement', () => {
-  lab.test('decrement the counter value', (done) => {
+  lab.test('PUT /counter/decrement decrement the counter value', (done) => {
     counterStore.counter = 1000;
     let initialCounter = counterStore.counter;
     server.inject({
@@ -151,7 +136,7 @@ lab.experiment('PUT /counter/decrement', () => {
     });
   });
 
-  lab.test('trigger an error if counter < 0', (done) => {
+  lab.test('PUT /counter/decrement trigger an error if counter < 0', (done) => {
     counterStore.counter = 0;
     server.inject({
       method: "PUT",
@@ -161,4 +146,8 @@ lab.experiment('PUT /counter/decrement', () => {
       done();
     });
   });
+});
+
+lab.experiment('kvstore', () => {
+
 });
