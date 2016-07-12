@@ -51,6 +51,12 @@ lab.experiment('POST /counter', () => {
 
 lab.experiment('PUT /counter/increment', () => {
 
+  lab.test('increment the counter value', (done) => {
+
+  });
+
+  lab.test('trigger an error if counter > 1000', (done) => {
+  })
 });
 
 lab.experiment('PUT /counter/decrement', () => {
