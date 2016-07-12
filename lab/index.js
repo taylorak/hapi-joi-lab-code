@@ -206,7 +206,7 @@ lab.experiment.skip('kvstore', () => {
     kvstore[good_key] = good_string_value;
     server.inject({
       method: "GET",
-      url: `/kvstore/${good_key}`
+      url: `/kvstore/${good_key}`,
     }, function(response) {
       let result = response.result;
       expect(response.status).to.equal(200);
@@ -229,7 +229,11 @@ lab.experiment.skip('kvstore', () => {
   lab.test.skip('POST /kvstore/string set a n object with a string value', (done) => {
     server.inject({
       method: "POST",
-      url: `/kvstore/string?key=${good_key}&value=${good_string_value}`
+      url: "/kvstore/string",
+      params: {
+        key: good_key,
+        value: good_string_value
+      }
     }, function(response) {
       let result = response.result;
       expect(response.statusCode).to.equal(200);
@@ -242,9 +246,27 @@ lab.experiment.skip('kvstore', () => {
     kvstore[good_key] = good_string_value;
     server.inject({
       method: "POST",
-      url: `/kvstore/string?key=${good_key}&value=${good_string_value}`
+      url: "/kvstore/string",
+      params: {
+        key: good_key,
+        value: good_string_value
+      }
     }, function(response) {
       expect(response.statusCode).to.equal(409);
+      done();
+    });
+  });
+
+  lab.test.skip('POST /kvstore/string trigger error if not a string', (done) => {
+    server.inject({
+      method: "POST",
+      url: "/kvstore/string",
+      params: {
+        key: good_key,
+        value: good_number_value
+      }
+    }, function(response) {
+      expect(response.statusCode).to.equal(400);
       done();
     });
   });
@@ -252,7 +274,11 @@ lab.experiment.skip('kvstore', () => {
   lab.test.skip('POST /kvstore/string trigger error if max length is more than 10', (done) => {
     server.inject({
       method: "POST",
-      url: `/kvstore/string?key=${good_key}&value=${long_string_value}`
+      url: "/kvstore/string",
+      params: {
+        key: good_key,
+        value: long_string_value
+      }
     }, function(response) {
       expect(response.statusCode).to.equal(400);
       done();
@@ -262,7 +288,11 @@ lab.experiment.skip('kvstore', () => {
   lab.test.skip('POST /kvstore/string key must only contain numbers, letters, underscore, or dashes', (done) => {
     server.inject({
       method: "POST",
-      url: `/kvstore/string?key=${bad_key}&value=${good_string_value}`
+      url: "/kvstore/string",
+      params: {
+        key: bad_key,
+        value: good_string_value
+      }
     }, function(response) {
       expect(response.statusCode).to.equal(400);
       done();
@@ -272,7 +302,11 @@ lab.experiment.skip('kvstore', () => {
   lab.test.skip('POST /kvstore/number set a n object with a number value', (done) => {
     server.inject({
       method: "POST",
-      url: `/kvstore/number?key=${good_key}&value=${good_number_value}`
+      url: "/kvstore/number",
+      params: {
+        key: good_key,
+        value: good_number_value
+      }
     }, function(response) {
       let result = response.result;
       expect(response.statusCode).to.equal(200);
@@ -285,9 +319,27 @@ lab.experiment.skip('kvstore', () => {
     kvstore[good_key] = good_number_value;
     server.inject({
       method: "POST",
-      url: `/kvstore/number?key=${good_key}&value=${good_number_value}`
+      url: "/kvstore/number",
+      params: {
+        key: good_key,
+        value: good_number_value
+      }
     }, function(response) {
       expect(response.statusCode).to.equal(409);
+      done();
+    });
+  });
+
+  lab.test.skip('POST /kvstore/number trigger error if not a number', (done) => {
+    server.inject({
+      method: "POST",
+      url: "/kvstore/number",
+      params: {
+        key: good_key,
+        value: good_string_value
+      }
+    }, function(response) {
+      expect(response.statusCode).to.equal(400);
       done();
     });
   });
@@ -295,7 +347,11 @@ lab.experiment.skip('kvstore', () => {
   lab.test.skip('POST /kvstore/number trigger error if number is between 0 and 1000', (done) => {
     server.inject({
       method: "POST",
-      url: `/kvstore/number?key=${good_key}&value=${bad_number_value}`
+      url: "/kvstore/number",
+      params: {
+        key: good_key,
+        value: bad_number_value
+      }
     }, function(response) {
       expect(response.statusCode).to.equal(400);
       done();
@@ -305,7 +361,11 @@ lab.experiment.skip('kvstore', () => {
   lab.test.skip('POST /kvstore/number key must only contain numbers, letters, underscore, or dashes', (done) => {
     server.inject({
       method: "POST",
-      url: `/kvstore/number?key=${bad_key}&value=${good_number_value}`
+      url: "/kvstore/number",
+      params: {
+        key: bad_key,
+        value: good_number_value
+      }
     }, function(response) {
       expect(response.statusCode).to.equal(400);
       done();
@@ -315,7 +375,11 @@ lab.experiment.skip('kvstore', () => {
   lab.test.skip('POST /kvstore/array/string set an object with a string array', (done) => {
     server.inject({
       method: "POST",
-      url: `/kvstore/array/string?key=${good_key}&value=${good_string_array}`
+      url: "/kvstore/array/string",
+      params: {
+        key: good_key,
+        value: good_string_array
+      }
     }, function(response) {
       let result = response.result;
       expect(response.statusCode).to.equal(200);
@@ -328,9 +392,27 @@ lab.experiment.skip('kvstore', () => {
     kvstore[good_key] = good_string_array;
     server.inject({
       method: "POST",
-      url: `/kvstore/array/string?key=${good_key}&value=${good_string_array}`
+      url: "/kvstore/array/string",
+      params: {
+        key: good_key,
+        value:good_string_array
+      }
     }, function(response) {
       expect(response.statusCode).to.equal(409);
+      done();
+    });
+  });
+
+  lab.test.skip('POST /kvstore/array/string trigger error if not an array of strings', (done) => {
+    server.inject({
+      method: "POST",
+      url: "/kvstore/array/string",
+      params: {
+        key: good_key,
+        value: good_number_array
+      }
+    }, function(response) {
+      expect(response.statusCode).to.equal(400);
       done();
     });
   });
@@ -338,7 +420,11 @@ lab.experiment.skip('kvstore', () => {
   lab.test.skip('POST /kvstore/array/string trigger error if any string has a length greater than 10', (done) => {
     server.inject({
       method: "POST",
-      url: `/kvstore/array/string?key=${good_key}&value=${bad_string_array}`
+      url: "/kvstore/array/string",
+      params: {
+        key: good_key,
+        value: bad_string_array
+      }
     }, function(response) {
       expect(response.statusCode).to.equal(400);
       done();
@@ -348,7 +434,11 @@ lab.experiment.skip('kvstore', () => {
   lab.test.skip('POST /kvstore/array/string key must only contain numbers, letters, underscore, or dashes', (done) => {
     server.inject({
       method: "POST",
-      url: `/kvstore/array/string?key=${bad_key}&value=${good_string_array}`
+      url: "/kvstore/array/string",
+      params: {
+        key: bad_key,
+        value: good_string_array
+      }
     }, function(response) {
       expect(response.statusCode).to.equal(400);
       done();
@@ -358,7 +448,11 @@ lab.experiment.skip('kvstore', () => {
   lab.test.skip('POST /kvstore/array/number set an object with a number array', (done) => {
     server.inject({
       method: "POST",
-      url: `/kvstore/array/number?key=${good_key}&value=${good_number_array}`
+      url: "/kvstore/array/number",
+      params: {
+        key: good_key,
+        value: good_number_array
+      }
     }, function(response) {
       let result = response.result;
       expect(response.statusCode).to.equal(200);
@@ -371,9 +465,27 @@ lab.experiment.skip('kvstore', () => {
     kvstore[good_key] = good_number_array;
     server.inject({
       method: "POST",
-      url: `/kvstore/array/number?key=${good_key}&value=${good_number_array}`
+      url: "/kvstore/array/number",
+      params: {
+        key: good_key,
+        value: good_number_array
+      }
     }, function(response) {
       expect(response.statusCode).to.equal(409);
+      done();
+    });
+  });
+
+  lab.test.skip('POST /kvstore/array/number trigger error if not an array of numbers ', (done) => {
+    server.inject({
+      method: "POST",
+      url: "/kvstore/array/number",
+      params: {
+        key: good_key,
+        value: good_string_array
+      }
+    }, function(response) {
+      expect(response.statusCode).to.equal(400);
       done();
     });
   });
@@ -381,7 +493,11 @@ lab.experiment.skip('kvstore', () => {
   lab.test.skip('POST /kvstore/array/number trigger error if the number is not between 0 and 1000', (done) => {
     server.inject({
       method: "POST",
-      url: `/kvstore/array/number?key=${good_key}&value=${bad_number_array}`
+      url: "/kvstore/array/number",
+      params: {
+        key: good_key,
+        value: bad_number_array
+      }
     }, function(response) {
       expect(response.statusCode).to.equal(400);
       done();
@@ -391,7 +507,11 @@ lab.experiment.skip('kvstore', () => {
   lab.test.skip('POST /kvstore/array/number key must only contain numbers, letters, underscore, or dashes', (done) => {
     server.inject({
       method: "POST",
-      url: `/kvstore/array/number?key=${bad_key}&value=${bad_number_array}`
+      url: "/kvstore/array/number"
+      params: {
+        key: bad_key,
+        value: bad_number_array
+      }
     }, function(response) {
       expect(response.statusCode).to.equal(400);
       done();
@@ -401,7 +521,11 @@ lab.experiment.skip('kvstore', () => {
   lab.test.skip('POST /kvstore/array/ set an object with a number or string array', (done) => {
     server.inject({
       method: "POST",
-      url: `/kvstore/array?key=${good_key}&value=${good_number_string_array}`
+      url: "/kvstore/array",
+      params: {
+        key: good_key,
+        value: good_number_string_array
+      }
     }, function(response) {
       let result = response.result;
       expect(response.statusCode).to.equal(200);
@@ -414,9 +538,27 @@ lab.experiment.skip('kvstore', () => {
     kvstore[good_key] = good_number_string_array;
     server.inject({
       method: "POST",
-      url: `/kvstore/array?key=${good_key}&value=${good_number_string_array}`
+      url: "/kvstore/array",
+      params: {
+        key: good_key,
+        value: good_number_string_array
+      }
     }, function(response) {
       expect(response.statusCode).to.equal(409);
+      done();
+    });
+  });
+
+  lab.test.skip('POST /kvstore/array trigger error if not an array', (done) => {
+    server.inject({
+      method: "POST",
+      url: "/kvstore/array",
+      params: {
+        key: good_key,
+        value: good_number_value
+      }
+    }, function(response) {
+      expect(response.statusCode).to.equal(400);
       done();
     });
   });
@@ -424,7 +566,11 @@ lab.experiment.skip('kvstore', () => {
   lab.test.skip('POST /kvstore/array trigger error if the number is not between 0 and 1000', (done) => {
     server.inject({
       method: "POST",
-      url: `/kvstore/array?key=${good_key}&value=${bad_number_array}`
+      url: "/kvstore/array",
+      params: {
+        key: good_key,
+        value: bad_number_array
+      }
     }, function(response) {
       expect(response.statusCode).to.equal(400);
       done();
@@ -434,7 +580,11 @@ lab.experiment.skip('kvstore', () => {
   lab.test.skip('POST /kvstore/array trigger error if the string is greater than 10 length', (done) => {
     server.inject({
       method: "POST",
-      url: `/kvstore/array?key=${good_key}&value=${bad_string_array}`
+      url: "/kvstore/array",
+      params: {
+        key: good_key,
+        value: bad_string_array
+      }
     }, function(response) {
       expect(response.statusCode).to.equal(400);
       done();
@@ -444,7 +594,11 @@ lab.experiment.skip('kvstore', () => {
   lab.test.skip('POST /kvstore/array key must only contain numbers, letters, underscore, or dashes', (done) => {
     server.inject({
       method: "POST",
-      url: `/kvstore/array?key=${bad_key}&value=${good_number_string_array}`
+      url: "/kvstore/array"
+      params: {
+        key: bad_key,
+        value: good_number_string_array
+      }
     }, function(response) {
       expect(response.statusCode).to.equal(400);
       done();
