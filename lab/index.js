@@ -4,9 +4,13 @@ const Code = require('code');
 const Lab = require('lab');
 const lab = exports.lab = Lab.script();
 const server = require('../src/');
-let counterStore = require('../src/counterStore');
+const counterStore = require('../src/counterStore');
+const kvstore = require('../src/kvstore');
 const expect = Code.expect;
 
+/**
+* COUNTER TESTS
+**/
 lab.experiment('counter', () => {
   lab.test('GET / root route should be forbidden', (done) => {
     server.inject({
@@ -158,6 +162,127 @@ lab.experiment('counter', () => {
   });
 });
 
-lab.experiment('kvstore', () => {
+/**
+* KVSTORE TESTS
+**/
+lab.experiment.skip('kvstore', () => {
+
+  const good_key = 'good_key';
+  const bad_key = 'bad-key';
+
+  const good_string_value = 'good_value';
+  const long_string_value = 'long_string_value';
+
+  const good_number_value = 5;
+  const bad_number_value = 1005;
+
+  const good_number_array = [good_number_value];
+  const bad_number_array = [bad_number_value];
+
+  const good_string_array = [good_string_value];
+  const bad_string_array = [long_string_value];
+
+  const good_number_string_array = [good_number_value, good_string_value];
+
+  lab.beforeEach((done) => {
+    kvstore = {};
+    done();
+  });
+
+  lab.test.skip('GET /kvstore get the store', (done) => {
+    server.inject({
+      method: "GET",
+      url: "/kvstore"
+    }, function(response) {
+      let result = response.result;
+      expect(response.status).to.equal(200);
+      expect(result).to.be.an.object();
+      expect(result).to.be.empty();
+      done();
+    });
+  });
+
+  lab.test.skip('GET /kvstore/:key returns an item with the specified key', (done) => {
+    kvstore[good_key] = good_string_value;
+    server.inject({
+      method: "GET",
+      url: "/kvstore/good_key"
+    }, function(response) {
+      let result = response.result;
+      expect(response.status).to.equal(200);
+      expect(result).to.be.an.object();
+      expect(result[good_key]).to.equal(good_string_value);
+      done();
+    });
+  });
+
+  lab.test.skip('GET /kvstore/:key returns 404 if the key does not exist', (done) => {
+    server.inject({
+      method: "GET",
+      url: "/kvstore/bad_key"
+    }, function(response) {
+      expect(response.status).to.equal(404);
+      done();
+    });
+  });
+
+  lab.test.skip('POST /kvstore/string set a n object with a string value', (done) => {
+    server.inject({
+      method: "POST",
+      url: "/kvstore/string",
+      params: {
+        key: good_key,
+        value: good_string_value
+      }
+    }, function(response) {
+      let result = response.result;
+      expect(response.statusCode).to.equal(200);
+      expect(result).to.be.an.object();
+      expect(result[good_key]).to.equal(good_string_value);
+    });
+  });
+
+  lab.test.skip('POST /kvstore/string if the key already exists return a 409 error', (done) => {
+    kvstore[good_key] = good_string_value;
+    server.inject({
+      method: "POST",
+      url: "/kvstore/string",
+      params: {
+        key: good_key,
+        value: good_string_value
+      }
+    }, function(response) {
+      expect(response.statusCode).to.equal(409);
+      done();
+    });
+  });
+
+  lab.test.skip('POST /kvstore/string trigger error if max length is more than 10', (done) => {
+    server.inject({
+      method: "POST",
+      url: "/kvstore/string",
+      params: {
+        key: good_key,
+        value: long_string_value
+      }
+    }, function(response) {
+      expect(response.statusCode).to.equal(400);
+      done();
+    });
+  });
+
+  lab.test.skip('POST /kvstore/string key must only contain numbers, letters, underscore, or dashes', (done) => {
+    server.inject({
+      method: "POST",
+      url: "/kvstore/string",
+      params: {
+        key: bad_key,
+        value: good_string_value
+      }
+    }, function(response) {
+      expect(response.statusCode).to.equal(400);
+      done();
+    });
+  });
 
 });
