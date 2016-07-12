@@ -2,6 +2,7 @@
 
 const Hapi = require('hapi');
 const Joi = require('joi');
+const Boom = require('boom');
 const PORT = process.env.PORT || 3000;
 
 const server = new Hapi.Server();
@@ -13,8 +14,8 @@ server.route({
   method: 'GET',
   path: '/',
   handler: function (request, reply) {
-    reply(counterStore);
-  }
+    reply(Boom.forbidden());
+  },
 });
 
 server.route({
@@ -45,8 +46,12 @@ server.route({
   method: 'PUT',
   path: '/counter/increment',
   handler: function (request, reply) {
-    if(counterStore.counter < 1000) counterStore.counter++;
+    counterStore.counter++;
+    if(counterStore.counter > 1000) {
+      return reply(Boom.badImplementation("counter must be below 1000"));
+    }
     reply(counterStore);
+
   }
 });
 
@@ -54,15 +59,22 @@ server.route({
   method: 'PUT',
   path: '/counter/decrement',
   handler: function (request, reply) {
-    if(counterStore.counter > 0) counterStore.counter--;
+    counterStore.counter--;
+    if(counterStore.counter < 0) {
+      return reply(Boom.badImplementation("counter must be greater than or equal to 0"));
+    }
     reply(counterStore);
   }
 });
 
-server.start((err) => {
-  if(err) {
-    throw err;
-  }
+if(!module.parent) {
+  server.start((err) => {
+    if(err) {
+      throw err;
+    }
 
-  console.log('Server running at:', server.info.uri);
-});
+    console.log('Server running at:', server.info.uri);
+  });
+}
+
+module.exports = server;
