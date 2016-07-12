@@ -15,7 +15,7 @@ server.route({
   path: '/',
   handler: function (request, reply) {
     reply(Boom.forbidden());
-  }
+  },
 });
 
 server.route({
@@ -23,8 +23,13 @@ server.route({
   path: '/counter',
   handler: function (request, reply) {
     reply(counterStore);
+  },
+  config: {
+    validate: {
+      query: Joi.object().keys({})
+    }
   }
-});
+ });
 
 server.route({
   method: 'POST',

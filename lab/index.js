@@ -33,6 +33,16 @@ lab.experiment('counter', () => {
     });
   });
 
+  lab.test('GET /counter trigger an error when given a querystring', (done) => {
+    server.inject({
+      method: "GET",
+      url: "/counter?hello=world",
+    }, function(response) {
+      expect(response.statusCode).to.equal(400);
+      done();
+    });
+  });
+
   lab.test('POST /counter sets the counter value', (done) => {
     let counter = 50;
     server.inject({
