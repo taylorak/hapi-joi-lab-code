@@ -344,5 +344,64 @@ lab.experiment.skip('kvstore', () => {
     });
   });
 
+  lab.test.skip('POST /kvstore/array/string set an object with a string array', (done) => {
+    server.inject({
+      method: "POST",
+      url: "/kvstore/array/string",
+      params: {
+        key: good_key,
+        value: good_string_array
+      }
+    }, function(response) {
+      let result = response.result;
+      expect(response.statusCode).to.equal(200);
+      expect(result).to.be.an.object();
+      expect(result[good_key]).to.equal(good_string_array);
+    });
+  });
+
+  lab.test.skip('POST /kvstore/array/string if the key already exists return a 409 error', (done) => {
+    kvstore[good_key] = good_string_array;
+    server.inject({
+      method: "POST",
+      url: "/kvstore/array/string",
+      params: {
+        key: good_key,
+        value: good_string_array
+      }
+    }, function(response) {
+      expect(response.statusCode).to.equal(409);
+      done();
+    });
+  });
+
+  lab.test.skip('POST /kvstore/array/string trigger error if any string has a length greater than 10', (done) => {
+    server.inject({
+      method: "POST",
+      url: "/kvstore/array/string",
+      params: {
+        key: good_key,
+        value: bad_string_array
+      }
+    }, function(response) {
+      expect(response.statusCode).to.equal(400);
+      done();
+    });
+  });
+
+  lab.test.skip('POST /kvstore/array/string key must only contain numbers, letters, underscore, or dashes', (done) => {
+    server.inject({
+      method: "POST",
+      url: "/kvstore/array/string",
+      params: {
+        key: bad_key,
+        value: good_string_value
+      }
+    }, function(response) {
+      expect(response.statusCode).to.equal(400);
+      done();
+    });
+  });
+
 
 });
